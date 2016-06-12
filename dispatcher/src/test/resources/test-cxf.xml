@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs-client">
+
+    <jaxrs:server address="camel://direct:restBeans" id="restBeans">
+        <jaxrs:serviceBeans>
+            <bean class="al.koop.fuse.api.dispatcher.routes.rest.RestInterfaceClass" />
+            <bean class="al.koop.fuse.api.dispatcher.routes.rest.RestAnnotatedClass" />
+        </jaxrs:serviceBeans>
+    </jaxrs:server>
+
+    <bean id="org.apache.camel.component.cxf.transport.CamelTransportFactory" class="org.apache.camel.component.cxf.transport.CamelTransportFactory">
+        <argument ref="cxf"/>
+        <property name="camelContext" ref="apiDispatcherTestContext" />
+        <property name="transportIds">
+            <list>
+                <value>http://cxf.apache.org/transports/camel</value>
+            </list>
+        </property>
+        <property name="checkException" value="true" />
+    </bean>
+
+    <bean id="restRequestHandler" class="al.koop.fuse.api.dispatcher.DefaultRequestHandler">
+        <!-- uri to send data to -->
+        <argument value="direct:restRequestHandler" />
+        <!-- CamelContext -->
+        <argument ref="apiDispatcherTestContext" />
+        <!-- REST beans server -->
+        <argument ref="restBeans" />
+    </bean>
+
+    <camelContext trace="false" xmlns="http://camel.apache.org/schema/blueprint" id="apiDispatcherTestContext">
+
+        <route id="testRoute">
+            <from uri="direct:restRequestHandler" />
+
+            <to uri="direct:restBeans" />
+        </route>
+
+    </camelContext>
+
+
+
+</blueprint>

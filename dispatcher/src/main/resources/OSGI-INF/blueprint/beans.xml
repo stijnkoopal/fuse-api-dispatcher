@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+
+    <bean id="requestHandlerRegistry" class="al.koop.fuse.api.dispatcher.internal.RequestHandlerRegistry" />
+
+    <bean id="dispatchHandler" class="al.koop.fuse.api.dispatcher.internal.DispatchHandler">
+        <argument ref="requestHandlerRegistry" />
+    </bean>
+
+    <bean id="cleanupResponse" class="al.koop.fuse.api.dispatcher.util.CleanupResponse" />
+
+    <bean id="webApplicationExceptionHandler" class="al.koop.fuse.api.dispatcher.WebApplicationExceptionHandler"/>
+
+    <bean id="jetty" class="al.koop.fuse.api.dispatcher.jetty.CustomJettyHttpComponent">
+        <property name="headerFilterStrategy">
+            <bean class="al.koop.fuse.api.dispatcher.jetty.CustomHeaderFilterStrategy"/>
+        </property>
+    </bean>
+
+</blueprint>

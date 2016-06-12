@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
+           xsi:schemaLocation="
+       http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+
+    <cm:property-placeholder id="apiDispatcherProperties" persistent-id="al.koop.fuse.api.dispatcher" />
+
+    <camelContext trace="false" xmlns="http://camel.apache.org/schema/blueprint" id="apiDispatcherContext">
+
+        <endpoint
+                uri="jetty:{{al.koop.fuse.api.dispatcher.endpoint.protocol}}://{{al.koop.fuse.api.dispatcher.endpoint.host}}:{{al.koop.fuse.api.dispatcher.endpoint.port}}{{al.koop.fuse.api.dispatcher.endpoint.uri}}?matchOnUriPrefix=true&amp;disableStreamCache=true"
+                id="receiveApiMessageEndpoint"/>
+
+        <route id="apiDispatcherRoute">
+            <from uri="ref:receiveApiMessageEndpoint" />
+
+            <log loggingLevel="DEBUG" message="${headers}" />
+
+            <doTry>
+                <to uri="bean:dispatchHandler?method=resolve" />
+
+                <to uri="bean:dispatchHandler?method=dispatch" />
+
+                <doCatch>
+                    <exception>javax.ws.rs.WebApplicationException</exception>
+                    <handled>
+                        <constant>true</constant>
+                    </handled>
+                    <log message="Caught WebApplicationException: ${exception.message}" loggingLevel="INFO"/>
+                    <setHeader headerName="CamelHttpResponseCode">
+                        <method bean="webApplicationExceptionHandler" method="handle(${exception})"/>
+                    </setHeader>
+                    <to uri="bean:cleanupResponse?method=clean(true)" />
+                </doCatch>
+                <doCatch>
+                    <exception>org.apache.cxf.interceptor.security.AccessDeniedException</exception>
+                    <handled>
+                        <constant>true</constant>
+                    </handled>
+
+                    <log message="Dispatcher caught an exception: ${exception}" loggingLevel="WARN" />
+
+                    <setHeader headerName="CamelHttpResponseCode">
+                        <constant>403</constant>
+                    </setHeader>
+                    <to uri="bean:cleanupResponse?method=clean(true)" />
+                </doCatch>
+                <doCatch>
+                    <exception>java.lang.Exception</exception>
+                    <handled>
+                        <constant>true</constant>
+                    </handled>
+
+                    <log message="Dispatcher caught an exception: ${exception}" loggingLevel="WARN" />
+
+                    <setHeader headerName="CamelHttpResponseCode">
+                        <constant>500</constant>
+                    </setHeader>
+                    <to uri="bean:cleanupResponse?method=clean(true)" />
+                    <stop />
+                </doCatch>
+                <doFinally>
+                    <setHeader headerName="X-Frame-Options">
+                        <constant>deny</constant>
+                    </setHeader>
+                </doFinally>
+            </doTry>
+        </route>
+
+    </camelContext>
+
+</blueprint>
