@@ -1,8 +1,7 @@
 package al.koop.fuse.api.dispatcher.internal;
 
-import al.koop.fuse.api.dispatcher.RestEndpoint;
 import al.koop.fuse.api.dispatcher.RequestHandler;
-import org.apache.camel.PropertyInject;
+import al.koop.fuse.api.dispatcher.RestEndpoint;
 import org.apache.cxf.jaxrs.impl.MetadataMap;
 import org.apache.cxf.jaxrs.model.URITemplate;
 import org.slf4j.Logger;
@@ -46,9 +45,11 @@ public class RequestHandlerRegistry {
     }
 
     private final List<Tuple<URITemplate, HandlerWrapper>> dispatchers = synchronizedList(new ArrayList<>());
+    private final String baseUri;
 
-    @PropertyInject("al.koop.fuse.api.dispatcher.endpoint.uri")
-    private String baseUri;
+    public RequestHandlerRegistry(String baseUri) {
+        this.baseUri = baseUri;
+    }
 
     public Optional<HandlerWrapper> findDispatcher(String uri, String method) {
         return dispatchers.stream()
@@ -131,7 +132,7 @@ public class RequestHandlerRegistry {
 
     private String getBaseUri() {
         if (baseUri == null) {
-            baseUri = "";
+            return "";
         }
 
         if (baseUri.endsWith("/")) {

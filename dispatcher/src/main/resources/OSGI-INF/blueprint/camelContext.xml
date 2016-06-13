@@ -7,7 +7,7 @@
        http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
        http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
 
-    <cm:property-placeholder id="apiDispatcherProperties" persistent-id="al.koop.fuse.api.dispatcher" />
+    <cm:property-placeholder id="properties" persistent-id="al.koop.fuse.api.dispatcher" />
 
     <camelContext trace="false" xmlns="http://camel.apache.org/schema/blueprint" id="apiDispatcherContext">
 
@@ -37,7 +37,8 @@
                     <to uri="bean:cleanupResponse?method=clean(true)" />
                 </doCatch>
                 <doCatch>
-                    <exception>org.apache.cxf.interceptor.security.AccessDeniedException</exception>
+                    <exception>java.lang.Exception</exception>
+                    <!-- org.apache.cxf.interceptor.security.AccessDeniedException -->
                     <handled>
                         <constant>true</constant>
                     </handled>

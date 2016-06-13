@@ -16,6 +16,25 @@
         <developerConnection></developerConnection>
     </scm>
 
+    <properties>
+        <jboss-fuse-bom.version>6.2.1.redhat-084</jboss-fuse-bom.version>
+        <camel.version>2.15.1.redhat-621084</camel.version>
+        <cxf.version>3.0.4.redhat-621084</cxf.version>
+        <cxf-xjc-runtime.version>3.0.5</cxf-xjc-runtime.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.fuse.bom</groupId>
+                <artifactId>jboss-fuse-parent</artifactId>
+                <version>${jboss-fuse-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <modules>
         <module>dispatcher</module>
         <module>test-bundle-1</module>

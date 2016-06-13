@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
 
-    <bean id="requestHandlerRegistry" class="al.koop.fuse.api.dispatcher.internal.RequestHandlerRegistry" />
+    <bean id="requestHandlerRegistry" class="al.koop.fuse.api.dispatcher.internal.RequestHandlerRegistry">
+        <argument value="${al.koop.fuse.api.dispatcher.endpoint.uri}" />
+    </bean>
 
     <bean id="dispatchHandler" class="al.koop.fuse.api.dispatcher.internal.DispatchHandler">
         <argument ref="requestHandlerRegistry" />
     </bean>
 
-    <bean id="cleanupResponse" class="al.koop.fuse.api.dispatcher.util.CleanupResponse" />
+    <bean id="cleanupResponse" class="al.koop.fuse.api.dispatcher.util.CleanupResponse">
+        <argument value="${al.koop.fuse.api.dispatcher.clean.response.removeHeaders}" />
+        <argument value="${al.koop.fuse.api.dispatcher.clean.response.removeHeaders.exclude}" />
+    </bean>
 
     <bean id="webApplicationExceptionHandler" class="al.koop.fuse.api.dispatcher.WebApplicationExceptionHandler"/>
 

@@ -6,11 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 
-import java.lang.reflect.Field;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.*;
 import static org.junit.Assert.assertNull;
 
 /**
@@ -19,18 +15,12 @@ import static org.junit.Assert.assertNull;
 public class CleanupResponseTest {
 
     @InjectMocks
-    private CleanupResponse cr = new CleanupResponse();
+    private CleanupResponse cr = new CleanupResponse("*", "CamelHttpResponseCode");
     private Message message;
     private String contentType = "test";
 
     @Before
     public void setup() throws NoSuchFieldException, IllegalAccessException {
-        Field removeHeadersField = cr.getClass().getDeclaredField("removeHeaders");
-        Field excludeHeadersField = cr.getClass().getDeclaredField("excludeHeaders");
-        removeHeadersField.setAccessible(true);
-        excludeHeadersField.setAccessible(true);
-        removeHeadersField.set(cr, "*");
-        excludeHeadersField.set(cr, "CamelHttpResponseCode");
         message = new DefaultMessage();
         message.setHeader("testHeader", "with a value of a string");
         message.setHeader("CamelHttpResponseCode", "This header should not be removed");

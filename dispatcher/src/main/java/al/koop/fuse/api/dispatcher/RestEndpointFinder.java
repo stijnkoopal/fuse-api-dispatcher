@@ -24,7 +24,7 @@ public class RestEndpointFinder {
         List<Class<?>> classes = restServer.getServiceFactory().getResourceClasses();
 
         return classes.stream()
-                .flatMap(c -> concat(stream(c.getInterfaces()), stream(c.getClasses())))
+                .flatMap(c -> concat(concat(stream(c.getInterfaces()), stream(c.getClasses())), Stream.of(c)))
                 .flatMap(RestEndpointFinder::checkClass);
     }
 

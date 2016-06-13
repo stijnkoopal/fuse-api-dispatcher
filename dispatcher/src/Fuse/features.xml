@@ -6,5 +6,9 @@
         <bundle>mvn:org.apache.camel/camel-jetty/${camel.version}</bundle>
 
         <feature>camel-jetty</feature>
+        <feature>camel-cxf</feature>
+
+        <bundle>mvn:org.apache.cxf.xjc-utils/cxf-xjc-runtime/${cxf-xjc-runtime.version}</bundle>
+        <bundle>mvn:org.apache.cxf/cxf-rt-frontend-jaxrs/${cxf.version}</bundle>
     </feature>
 </features>

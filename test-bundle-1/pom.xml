@@ -2,9 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>al.koop.fuse</groupId>
+        <artifactId>api-dispatcher</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
     <groupId>al.koop.fuse.api-dispatcher</groupId>
     <artifactId>test-bundle-1</artifactId>
-    <version>1.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <!-- Git repo -->
@@ -12,6 +17,29 @@
         <connection></connection>
         <developerConnection></developerConnection>
     </scm>
+
+    <dependencies>
+        <dependency>
+            <groupId>al.koop.fuse.api-dispatcher</groupId>
+            <artifactId>dispatcher</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- CXF -->
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-cxf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+        </dependency>
+    </dependencies>
 
     <build>
         <resources>

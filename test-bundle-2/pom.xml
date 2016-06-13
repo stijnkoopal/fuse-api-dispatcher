@@ -13,6 +13,14 @@
         <developerConnection></developerConnection>
     </scm>
 
+    <dependencies>
+        <dependency>
+            <groupId>al.koop.fuse.api-dispatcher</groupId>
+            <artifactId>dispatcher</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <resources>
             <resource>
