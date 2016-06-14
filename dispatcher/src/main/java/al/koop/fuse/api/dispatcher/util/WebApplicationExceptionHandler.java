@@ -1,12 +1,15 @@
-package al.koop.fuse.api.dispatcher;
+package al.koop.fuse.api.dispatcher.util;
 
 import org.slf4j.Logger;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 
+import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.slf4j.LoggerFactory.getLogger;
 
+/**
+ * In order to return a different status, throw an WebApplicationException
+ */
 public class WebApplicationExceptionHandler {
     private static final Logger LOG = getLogger(WebApplicationExceptionHandler.class);
 
@@ -27,7 +30,7 @@ public class WebApplicationExceptionHandler {
                 i++;
                 cause = cause.getCause();
             }
-            return Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
+            return INTERNAL_SERVER_ERROR.getStatusCode();
         }
     }
 

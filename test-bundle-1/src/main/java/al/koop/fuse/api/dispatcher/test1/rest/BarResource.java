@@ -12,11 +12,11 @@ public class BarResource {
 
     @GET
     public Response get() {
-        return ok().build();
+        return ok("bar.get").build();
     }
 
     @POST
     public Response post() {
-        return ok().build();
+        return ok("bar.post").build();
     }
 }

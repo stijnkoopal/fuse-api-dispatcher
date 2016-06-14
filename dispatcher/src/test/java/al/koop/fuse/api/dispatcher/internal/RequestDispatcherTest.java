@@ -13,20 +13,18 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.NotFoundException;
-import java.util.Optional;
 
-import static al.koop.fuse.api.dispatcher.internal.DispatchHandler.DISPATCH_HANDLER_HEADER;
+import static al.koop.fuse.api.dispatcher.internal.DispatchingHelper.DISPATCH_HANDLER_KEY;
 import static java.util.Collections.emptyList;
-import static java.util.Optional.empty;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DispatchHandlerTest {
+public class RequestDispatcherTest {
 
     @Mock
     private RequestHandlerRegistry requestHandlerRegistryMock;
@@ -47,7 +45,7 @@ public class DispatchHandlerTest {
     private CamelContext camelContextMock;
 
     @InjectMocks
-    private DispatchHandler dispatchHandler;
+    private RequestDispatcher requestDispatcher;
 
     @Before
     public void setUp() {
@@ -55,35 +53,13 @@ public class DispatchHandlerTest {
         given(messageMock.getRequest()).willReturn(requestMock);
     }
 
-    @Test(expected = NotFoundException.class)
-    public void resolveShouldHaveDispatcher() throws Exception {
-        // given
-        given(requestHandlerRegistryMock.findDispatcher(anyString(), anyString())).willReturn(empty());
-
-        // when
-        dispatchHandler.resolve(exchangeMock);
-    }
-
-    @Test
-    public void securedAsksForProfile() throws Exception {
-        // given
-        HandlerWrapper handlerWrapper = new HandlerWrapper(requestHandlerMock, "GET", emptyList());
-        given(requestHandlerRegistryMock.findDispatcher(anyString(), anyString())).willReturn(Optional.of(handlerWrapper));
-
-        // when
-        dispatchHandler.resolve(exchangeMock);
-
-        // then
-        then(messageMock).should(times(1)).setHeader(DISPATCH_HANDLER_HEADER, handlerWrapper);
-    }
-
     @Test(expected = IllegalStateException.class)
     public void dispatcherShouldBeSet() throws Exception{
         // given
-        given(messageMock.removeHeader(DISPATCH_HANDLER_HEADER)).willReturn(null);
+        given(messageMock.removeHeader(DISPATCH_HANDLER_KEY)).willReturn(null);
 
         // when
-        dispatchHandler.dispatch(exchangeMock);
+        requestDispatcher.dispatch(exchangeMock);
 
         // then
         then(requestHandlerMock).should(times(0)).handle(any(Exchange.class));
@@ -93,11 +69,11 @@ public class DispatchHandlerTest {
     public void dispatchShouldDispatchWithClonedExchange() throws Exception{
         // given
         HandlerWrapper handlerWrapper = new HandlerWrapper(requestHandlerMock, "GET", emptyList());
-        given(messageMock.removeHeader(DISPATCH_HANDLER_HEADER)).willReturn(handlerWrapper);
+        given(messageMock.removeHeader(DISPATCH_HANDLER_KEY)).willReturn(handlerWrapper);
         given(requestHandlerMock.getCamelContext()).willReturn(camelContextMock);
 
         // when
-        dispatchHandler.dispatch(exchangeMock);
+        requestDispatcher.dispatch(exchangeMock);
 
         // then
         ArgumentCaptor<Exchange> captor = ArgumentCaptor.forClass(Exchange.class);

@@ -12,17 +12,10 @@
     <artifactId>test-bundle-1</artifactId>
     <packaging>bundle</packaging>
 
-    <!-- Git repo -->
-    <scm>
-        <connection></connection>
-        <developerConnection></developerConnection>
-    </scm>
-
     <dependencies>
         <dependency>
             <groupId>al.koop.fuse.api-dispatcher</groupId>
             <artifactId>dispatcher</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- CXF -->
@@ -33,7 +26,6 @@
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-            <version>${cxf.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
@@ -51,22 +43,11 @@
 
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>3.0.0</version>
-                <extensions>true</extensions>
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.7</version>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
@@ -89,7 +70,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.9.1</version>
                 <executions>
                     <execution>
                         <inherited>false</inherited>

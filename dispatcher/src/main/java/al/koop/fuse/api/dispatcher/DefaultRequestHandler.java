@@ -36,20 +36,7 @@ public class DefaultRequestHandler implements RequestHandler {
 
         this.producerTemplate.setDefaultEndpoint(endpoint);
 
-        createSupportedUrls(restBeansServer);
-    }
-
-    public void createSupportedUrls(JAXRSServerFactoryBean restBeansServer) {
-        LOG.debug("create urls");
-        try {
-            findRESTEndpoints(restBeansServer)
-                    .forEach(urls::add);
-
-        } catch (Exception e) {
-            LOG.warn("Cannot add urls for REST server '{}', cause '{}'", restBeansServer.getBindingId(), e.toString());
-            LOG.debug("", e);
-            throw new IllegalStateException("Cannot add urls for REST server, REST server: " + restBeansServer.getBindingId(), e);
-        }
+        resolveAndAddEndpoints(restBeansServer);
     }
 
     @Override
@@ -65,5 +52,18 @@ public class DefaultRequestHandler implements RequestHandler {
     @Override
     public CamelContext getCamelContext() {
         return camelContext;
+    }
+
+    private void resolveAndAddEndpoints(JAXRSServerFactoryBean restBeansServer) {
+        LOG.debug("create urls");
+        try {
+            findRESTEndpoints(restBeansServer)
+                    .forEach(urls::add);
+
+        } catch (Exception e) {
+            LOG.warn("Cannot add urls for REST server '{}', cause '{}'", restBeansServer.getBindingId(), e.toString());
+            LOG.debug("", e);
+            throw new IllegalStateException("Cannot add urls for REST server, REST server: " + restBeansServer.getBindingId(), e);
+        }
     }
 }

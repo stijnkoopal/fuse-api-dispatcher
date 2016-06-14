@@ -16,30 +16,29 @@ import static org.apache.cxf.jaxrs.model.URITemplate.createTemplate;
 
 public class RequestHandlerRegistry {
     private static final Logger LOG = LoggerFactory.getLogger(RequestHandlerRegistry.class);
-    private static final Comparator<Tuple<URITemplate, HandlerWrapper>> TUPLE_COMPARATOR = new Comparator<Tuple<URITemplate, HandlerWrapper>>() {
-        @Override
-        public int compare(RequestHandlerRegistry.Tuple<URITemplate, HandlerWrapper> t1, RequestHandlerRegistry.Tuple<URITemplate, HandlerWrapper> t2) {
+
+    private static class Tuple<T, U> {
+
+        private static final Comparator<Tuple<URITemplate, HandlerWrapper>> COMPARATOR = (t1, t2) -> {
             int left = t1.getLeft().getVariables().size();
             int right = t2.getLeft().getVariables().size();
 
             return left == right ? 0 : left < right ? -1 : 1;
-        }
-    };
+        };
 
-    private static class Tuple<T, U> {
         private final T left;
         private final U right;
 
-        public Tuple(T left, U right) {
+        Tuple(T left, U right) {
             this.left = left;
             this.right = right;
         }
 
-        public T getLeft() {
+        T getLeft() {
             return left;
         }
 
-        public U getRight() {
+        U getRight() {
             return right;
         }
     }
@@ -83,7 +82,7 @@ public class RequestHandlerRegistry {
 
             // We can do this, as it is initialisation time, and not a lot of calls are made to this method
             // otherwise, we would need some ordered collection; that however, posses other problems
-            sort(dispatchers, TUPLE_COMPARATOR);
+            sort(dispatchers, Tuple.COMPARATOR);
 
         } else {
             LOG.warn("No supported urls given for '{}'", blueprintServiceName);

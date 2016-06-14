@@ -1,5 +1,6 @@
 package al.koop.fuse.api.dispatcher;
 
+import al.koop.fuse.api.dispatcher.util.WebApplicationExceptionHandler;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -64,18 +65,6 @@ public class WebApplicationExceptionHandlerTest {
 
         // then
         assertThat(code, is(418));
-    }
-
-    @Test
-    public void handlerShouldReturn500WhenWebAppExcetionIsNotCause() throws Exception {
-        // given
-//        GenericException e = new GenericException();
-//
-//        // when
-//        int code = handler.handle(e);
-//
-//        // then
-//        assertThat(code, is(500));
     }
 
     @Test

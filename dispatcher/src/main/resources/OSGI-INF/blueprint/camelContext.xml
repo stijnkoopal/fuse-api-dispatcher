@@ -11,6 +11,7 @@
 
     <camelContext trace="false" xmlns="http://camel.apache.org/schema/blueprint" id="apiDispatcherContext">
 
+        <!-- Jetty endpoint that does the actual listening-->
         <endpoint
                 uri="jetty:{{al.koop.fuse.api.dispatcher.endpoint.protocol}}://{{al.koop.fuse.api.dispatcher.endpoint.host}}:{{al.koop.fuse.api.dispatcher.endpoint.port}}{{al.koop.fuse.api.dispatcher.endpoint.uri}}?matchOnUriPrefix=true&amp;disableStreamCache=true"
                 id="receiveApiMessageEndpoint"/>
@@ -18,13 +19,17 @@
         <route id="apiDispatcherRoute">
             <from uri="ref:receiveApiMessageEndpoint" />
 
-            <log loggingLevel="DEBUG" message="${headers}" />
-
+            <!-- Dispatching happens in two-steps: 1. resolve, 2. dispatch. This allows for fail fast deep auth for example -->
             <doTry>
-                <to uri="bean:dispatchHandler?method=resolve" />
+                <!-- Step 1: resolve the request to the right handler -->
+                <to uri="bean:requestResolver" />
 
-                <to uri="bean:dispatchHandler?method=dispatch" />
+                <!-- Extension point for deep auth etc -->
 
+                <!-- Step 2: dispatch the actual request -->
+                <to uri="bean:requestDispatcher" />
+
+                <!-- If we run into an WebApplicationException, we have our own handler for that -->
                 <doCatch>
                     <exception>javax.ws.rs.WebApplicationException</exception>
                     <handled>
@@ -34,22 +39,9 @@
                     <setHeader headerName="CamelHttpResponseCode">
                         <method bean="webApplicationExceptionHandler" method="handle(${exception})"/>
                     </setHeader>
-                    <to uri="bean:cleanupResponse?method=clean(true)" />
                 </doCatch>
-                <doCatch>
-                    <exception>java.lang.Exception</exception>
-                    <!-- org.apache.cxf.interceptor.security.AccessDeniedException -->
-                    <handled>
-                        <constant>true</constant>
-                    </handled>
 
-                    <log message="Dispatcher caught an exception: ${exception}" loggingLevel="WARN" />
-
-                    <setHeader headerName="CamelHttpResponseCode">
-                        <constant>403</constant>
-                    </setHeader>
-                    <to uri="bean:cleanupResponse?method=clean(true)" />
-                </doCatch>
+                <!-- All exceptions that go through we do not know how to handle: 500 -->
                 <doCatch>
                     <exception>java.lang.Exception</exception>
                     <handled>
@@ -61,13 +53,15 @@
                     <setHeader headerName="CamelHttpResponseCode">
                         <constant>500</constant>
                     </setHeader>
-                    <to uri="bean:cleanupResponse?method=clean(true)" />
-                    <stop />
                 </doCatch>
+
+                <!-- Cleanup response and set security headers if required -->
                 <doFinally>
                     <setHeader headerName="X-Frame-Options">
                         <constant>deny</constant>
                     </setHeader>
+
+                    <to uri="bean:cleanupResponse" />
                 </doFinally>
             </doTry>
         </route>

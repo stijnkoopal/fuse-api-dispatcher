@@ -5,7 +5,7 @@
            xsi:schemaLocation="
        http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
-    <bean id="barResource" class="al.koop.fuse.api.dispatcher.test1.rest.BarResource" />
-    <bean id="fooResource" class="al.koop.fuse.api.dispatcher.test1.rest.FooResource" />
+    <bean id="someResource" class="al.koop.fuse.api.dispatcher.test2.rest.SomeResource" />
+    <bean id="otherResource" class="al.koop.fuse.api.dispatcher.test2.rest.OtherResource" />
 
 </blueprint>

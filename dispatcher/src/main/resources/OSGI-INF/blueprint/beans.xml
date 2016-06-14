@@ -1,21 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
 
+    <!-- Bean to store and retrieve registered request handlers. Is used for osgi reference-list -->
     <bean id="requestHandlerRegistry" class="al.koop.fuse.api.dispatcher.internal.RequestHandlerRegistry">
         <argument value="${al.koop.fuse.api.dispatcher.endpoint.uri}" />
     </bean>
 
-    <bean id="dispatchHandler" class="al.koop.fuse.api.dispatcher.internal.DispatchHandler">
+    <!-- Bean used for actual dispatching of requests -->
+    <bean id="requestDispatcher" class="al.koop.fuse.api.dispatcher.internal.RequestDispatcher" />
+
+    <!-- Bean used for actual dispatching of requests -->
+    <bean id="requestResolver" class="al.koop.fuse.api.dispatcher.internal.RequestResolver">
         <argument ref="requestHandlerRegistry" />
     </bean>
 
-    <bean id="cleanupResponse" class="al.koop.fuse.api.dispatcher.util.CleanupResponse">
+    <!-- Bean required to clean the http response from camel headers -->
+    <bean id="cleanupResponse" class="al.koop.fuse.api.dispatcher.util.ResponseCleaner">
         <argument value="${al.koop.fuse.api.dispatcher.clean.response.removeHeaders}" />
         <argument value="${al.koop.fuse.api.dispatcher.clean.response.removeHeaders.exclude}" />
     </bean>
 
-    <bean id="webApplicationExceptionHandler" class="al.koop.fuse.api.dispatcher.WebApplicationExceptionHandler"/>
+    <!-- Exception handler used for different status types -->
+    <bean id="webApplicationExceptionHandler" class="al.koop.fuse.api.dispatcher.util.WebApplicationExceptionHandler"/>
 
+    <!-- The jetty server -->
     <bean id="jetty" class="al.koop.fuse.api.dispatcher.jetty.CustomJettyHttpComponent">
         <property name="headerFilterStrategy">
             <bean class="al.koop.fuse.api.dispatcher.jetty.CustomHeaderFilterStrategy"/>

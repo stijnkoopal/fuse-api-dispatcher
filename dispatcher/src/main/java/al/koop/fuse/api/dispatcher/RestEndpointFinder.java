@@ -41,7 +41,6 @@ public class RestEndpointFinder {
             rootPath = getRESTEndpointPath(clazz);
         }
         return findRESTEndpoints(rootPath, clazz);
-
     }
 
     /**

@@ -27,6 +27,6 @@ public class HandlerWrapper {
     }
 
     public List<Annotation> getAnnotations() {
-        return unmodifiableList(annotations);
+        return annotations;
     }
 }

@@ -2,9 +2,6 @@ package al.koop.fuse.api.dispatcher;
 
 import al.koop.fuse.api.dispatcher.util.InvalidRestInterface;
 import al.koop.fuse.api.dispatcher.util.ValidRestClass;
-import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
-import org.apache.cxf.jaxrs.JAXRSServiceFactoryBean;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.stream.Stream;
@@ -20,21 +17,6 @@ public class RestEndpointFinderTest {
     public void testFindRESTEndpoints() throws Exception {
         // given and when
         Stream<RestEndpoint> endpoints = RestEndpointFinder.findRESTEndpoints("", ValidRestClass.class);
-
-        // then
-        thenEndpointsShouldBeMapped(endpoints);
-    }
-
-    @Test
-    @Ignore
-    public void testFindRESTEndPointByRestServer() throws Exception {
-        // given
-        JAXRSServiceFactoryBean sf = new JAXRSServiceFactoryBean();
-        sf.setResourceClass(ValidRestClass.class);
-        JAXRSServerFactoryBean factoryBean = new JAXRSServerFactoryBean(sf);
-
-        // when
-        Stream<RestEndpoint> endpoints = RestEndpointFinder.findRESTEndpoints(factoryBean);
 
         // then
         thenEndpointsShouldBeMapped(endpoints);
