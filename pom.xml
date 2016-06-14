@@ -13,8 +13,8 @@
 
     <!-- Git repo -->
     <scm>
-        <connection></connection>
-        <developerConnection></developerConnection>
+        <connection>scm:git:https://github.com/stijnkoopal/fuse-api-dispatcher.git</connection>
+        <developerConnection>scm:git:https://github.com/stijnkoopal/fuse-api-dispatcher.git</developerConnection>
     </scm>
 
     <properties>
