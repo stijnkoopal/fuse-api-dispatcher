@@ -17,7 +17,7 @@ import static java.util.Collections.unmodifiableList;
 public class DefaultRequestHandler implements RequestHandler {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultRequestHandler.class);
 
-    private final List<RestEndpoint> urls = new ArrayList<RestEndpoint>();
+    private final List<RestEndpoint> urls = new ArrayList<>();
     private final ProducerTemplate producerTemplate;
     private final CamelContext camelContext;
 
