@@ -83,10 +83,9 @@ public class RequestHandlerRegistry {
             // We can do this, as it is initialisation time, and not a lot of calls are made to this method
             // otherwise, we would need some ordered collection; that however, posses other problems
             sort(dispatchers, Tuple.COMPARATOR);
-
-        } else {
-            LOG.warn("No supported urls given for '{}'", blueprintServiceName);
+            return;
         }
+        LOG.warn("No supported urls given for '{}'", blueprintServiceName);
     }
 
     public synchronized void unbind(RequestHandler requestHandler, Map properties) {
@@ -104,8 +103,7 @@ public class RequestHandlerRegistry {
                 String url = normalizeUrl(restEndpoint.getUri());
                 while (iterator.hasNext()) {
                     URITemplate template = iterator.next().getLeft();
-                    int compare = URITemplate.compareTemplates(template, createTemplate(url));
-                    if (compare == 0) {
+                    if (URITemplate.compareTemplates(template, createTemplate(url)) == 0) {
                         iterator.remove();
 
                         LOG.debug("Remove dispatcher {} from uri {}", blueprintServiceName, url);
